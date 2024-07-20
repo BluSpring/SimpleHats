@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootPool;
@@ -24,6 +25,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,8 @@ public class SimpleHats implements ModInitializer {
     public static ModConfig config;
 
     public static RegistryKey<ItemGroup> HAT_TAB = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(modId, "hat_group"));
+
+    public static final TagKey<Item> ALL_HATS = TagKey.of(RegistryKeys.ITEM, new Identifier(modId, "all_hats"));
 
     @Override
     public void onInitialize() {

@@ -5,7 +5,7 @@
   "refmap": "simplehats-fabric-refmap.json",
   "mixins": [
     "MixinLivingEntity",
-    "MixinTrinketsApi"
+    "MixinTagGroupLoader"
   ],
   "minVersion": "0.8",
   "client": [

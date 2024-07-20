@@ -20,11 +20,11 @@ public class MixinHumanoidArmorLayer {
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
     public void simplehats_renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, LivingEntity entity, EquipmentSlot armorSlot, int light, BipedEntityModel<LivingEntity> model, CallbackInfo ci) {
         if(entity instanceof PlayerEntity && armorSlot.equals(EquipmentSlot.HEAD)) {
-            TrinketsApi.getTrinketComponent(entity).ifPresent(component ->
-                    component.forEach((slotReference, stack) -> {
-                        if(stack.getItem() instanceof HatItem) ci.cancel();
-                        })
-                    );
+            TrinketsApi.getTrinketComponent(entity).ifPresent(component -> {
+                var hasHatTrinket = !component.getEquipped(stack -> stack.getItem() instanceof HatItem).isEmpty();
+
+                if(hasHatTrinket) ci.cancel();
+            });
         }
     }
 }
