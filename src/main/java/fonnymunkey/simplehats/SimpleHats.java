@@ -4,14 +4,12 @@ import fonnymunkey.simplehats.common.init.HatJson;
 import fonnymunkey.simplehats.common.init.ModConfig;
 import fonnymunkey.simplehats.common.init.ModRegistry;
 import fonnymunkey.simplehats.util.UUIDHandler;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -19,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
-import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
-import top.theillusivec4.curios.api.client.ICurioRenderer;
 
 @Mod(SimpleHats.modId)
 public class SimpleHats {
@@ -32,7 +28,6 @@ public class SimpleHats {
         ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.COMMON, ModConfig.COMMON_SPEC);
         ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ModConfig.CLIENT_SPEC);
         eventBus.addListener(this::enqueueIMC);
-        eventBus.addListener(this::clientSetup);
 
         HatJson.registerHatJson();
         if(ModConfig.manualAllowUpdateCheck()) {//Resources don't load properly if loaded after configs are actually loaded, so manually do it early
@@ -48,14 +43,5 @@ public class SimpleHats {
 
     public void enqueueIMC(final InterModEnqueueEvent event) {
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.HEAD.getMessageBuilder().cosmetic().build());
-    }
-
-    public void clientSetup(final FMLClientSetupEvent event) {
-        for(Item hat : ModRegistry.hatList) {
-            if(hat instanceof ICurioRenderer renderer) {
-                CuriosRendererRegistry.register(hat, () -> renderer);
-            }
-        }
-        CuriosRendererRegistry.register((Item)ModRegistry.HATSPECIAL.get(), () -> (ICurioRenderer)ModRegistry.HATSPECIAL.get());
     }
 }
