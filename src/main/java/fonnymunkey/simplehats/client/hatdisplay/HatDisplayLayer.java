@@ -1,16 +1,17 @@
 package fonnymunkey.simplehats.client.hatdisplay;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import fonnymunkey.simplehats.common.entity.HatDisplay;
 import fonnymunkey.simplehats.common.item.HatItem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 public class HatDisplayLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
@@ -22,19 +23,25 @@ public class HatDisplayLayer<T extends LivingEntity, M extends EntityModel<T>> e
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int light, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if(livingEntity instanceof HatDisplay display) {
-            matrixStack.pushPose();
             ItemStack stack = display.getItemBySlot(null);
             if(!stack.isEmpty() && stack.getItem() instanceof HatItem) {
-                SlotContext slotContext = new SlotContext("head", livingEntity, 0, true,true);
-                CuriosRendererRegistry.getRenderer(stack.getItem()).ifPresent(
-                        renderer -> renderer
-                                .render(stack, slotContext, matrixStack, renderLayerParent,
-                                        renderTypeBuffer, light, limbSwing, limbSwingAmount, partialTicks,
-                                        ageInTicks, netHeadYaw, headPitch));
+                if(!livingEntity.isInvisible()) {
+                    poseStack.pushPose();
+                    
+                    poseStack.scale(1.01F, 1.01F, 1.01F);
+                    poseStack.translate(0.0F, 0.97F, 0.0F);
+                    
+                    poseStack.scale(0.66F, 0.66F, 0.66F);
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+                    poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+                    
+                    Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(livingEntity, stack, ItemTransforms.TransformType.HEAD, false, poseStack, buffer, packedLight);
+                    
+                    poseStack.popPose();
+                }
             }
-            matrixStack.popPose();
         }
     }
 }
