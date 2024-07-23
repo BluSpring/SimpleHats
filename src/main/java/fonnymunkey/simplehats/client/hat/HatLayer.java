@@ -11,14 +11,14 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.ModelWithHead;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3f;
 
 public class HatLayer<T extends LivingEntity, M extends EntityModel<T> & ModelWithHead> extends FeatureRenderer<T, M> {
 	
@@ -57,7 +57,7 @@ public class HatLayer<T extends LivingEntity, M extends EntityModel<T> & ModelWi
 			
 			this.getContextModel().getHead().rotate(poseStack);
 			translateToHead(poseStack, flag);
-			MinecraftClient.getInstance().getEntityRenderDispatcher().getHeldItemRenderer().renderItem(livingEntity, itemStack, ModelTransformationMode.HEAD, false, poseStack, buffer, packedLight);
+			MinecraftClient.getInstance().getEntityRenderDispatcher().getHeldItemRenderer().renderItem(livingEntity, itemStack, ModelTransformation.Mode.HEAD, false, poseStack, buffer, packedLight);
 			
 			poseStack.pop();
 		}
@@ -79,7 +79,7 @@ public class HatLayer<T extends LivingEntity, M extends EntityModel<T> & ModelWi
 	
 	private static void translateToHead(MatrixStack pPoseStack, boolean pIsVillager) {
 		pPoseStack.translate(0.0F, -0.25F, 0.0F);
-		pPoseStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+		pPoseStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
 		pPoseStack.scale(0.625F, -0.625F, -0.625F);
 		if(pIsVillager) {
 			pPoseStack.translate(0.0F, 0.1875F, 0.0F);
