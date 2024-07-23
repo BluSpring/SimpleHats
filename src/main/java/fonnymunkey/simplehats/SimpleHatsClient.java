@@ -2,6 +2,7 @@ package fonnymunkey.simplehats;
 
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
+import fonnymunkey.simplehats.client.hat.HatLayer;
 import fonnymunkey.simplehats.client.hatdisplay.HatDisplayModel;
 import fonnymunkey.simplehats.client.hatdisplay.HatDisplayRenderer;
 import fonnymunkey.simplehats.common.init.ModRegistry;
@@ -13,6 +14,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.item.Item;
 
 @Environment(EnvType.CLIENT)
@@ -36,5 +39,11 @@ public class SimpleHatsClient implements ClientModInitializer {
 
         EntityRendererRegistry.register(ModRegistry.HATDISPLAYENTITY, HatDisplayRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(HatDisplayRenderer.HATDISPLAY_LOCATION, HatDisplayModel::getTexturedModelData);
+        
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+            if(entityRenderer instanceof PlayerEntityRenderer playerEntityRenderer) {
+                registrationHelper.register(new HatLayer<>(playerEntityRenderer));
+            }
+        });
     }
 }
