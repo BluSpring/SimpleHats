@@ -42,6 +42,9 @@ public class HatVariantRecipe extends SpecialCraftingRecipe {
 
                 hat1.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(modelData));
             }
+            else {
+                hat1.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(1));
+            }
             return hat1;
         }
         return ItemStack.EMPTY;
